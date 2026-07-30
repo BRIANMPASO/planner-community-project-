@@ -1,9 +1,9 @@
 <?php
 // Database configuration for InfinityFree
-define('DB_HOST', 'sql103.infinityfree.com');
-define('DB_NAME', 'if0_42523075_planner_db');
-define('DB_USER', 'if0_42523075');
-define('DB_PASS', 'loKs01HykEwbBa');
+define('DB_HOST', '');
+define('DB_NAME', '');
+define('DB_USER', '');
+define('DB_PASS', '');
 
 // Site configuration - FORCE HTTPS
 define('SITE_URL', 'https://' . $_SERVER['HTTP_HOST'] . '/planner/');
