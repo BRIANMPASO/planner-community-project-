@@ -1,0 +1,1152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pamodzi Planner — Plan Your Day, Achieve Your Goals</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet" />
+
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+
+    <style>
+        /* ===== RESET & BASE ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #ffffff;
+            color: #1a1a2e;
+            overflow-x: hidden;
+        }
+
+        /* ===== COLOR VARIABLES ===== */
+        :root {
+            --navy: #0B2647;
+            --navy-light: #1A3A5C;
+            --blue: #2D7BDE;
+            --blue-light: #6BA6FF;
+            --blue-lighter: #E8F0FE;
+            --blue-bg: #F5F9FF;
+            --text-dark: #0B2647;
+            --text-muted: #5A6B7E;
+            --border-light: #E6EDF6;
+            --shadow: 0 20px 60px rgba(11, 38, 71, 0.08);
+            --shadow-hover: 0 30px 80px rgba(11, 38, 71, 0.12);
+            --gradient-primary: linear-gradient(135deg, #0B2647 0%, #1A3A5C 100%);
+            --gradient-blue: linear-gradient(135deg, #2D7BDE 0%, #6BA6FF 100%);
+        }
+
+        /* ===== ANIMATIONS ===== */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .animate-on-scroll.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ===== NAVIGATION ===== */
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(11, 38, 71, 0.06);
+            padding: 0.8rem 0;
+            transition: all 0.3s;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1050;
+        }
+
+        .navbar.scrolled {
+            box-shadow: 0 4px 20px rgba(11, 38, 71, 0.06);
+        }
+
+        .navbar-brand {
+            font-weight: 800;
+            font-size: 1.4rem;
+            color: var(--navy) !important;
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .navbar-brand svg {
+            height: 32px;
+            width: 32px;
+        }
+
+        .navbar-brand span {
+            color: var(--blue);
+        }
+
+        .nav-link {
+            font-weight: 500;
+            font-size: 0.9rem;
+            color: var(--text-dark) !important;
+            padding: 0.5rem 1.2rem !important;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+
+        .nav-link:hover {
+            background: var(--blue-lighter);
+            color: var(--blue) !important;
+        }
+
+        .nav-link.btn-nav {
+            background: var(--gradient-blue);
+            color: white !important;
+            padding: 0.5rem 1.8rem !important;
+            border-radius: 50px;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(45, 123, 222, 0.3);
+        }
+
+        .nav-link.btn-nav:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(45, 123, 222, 0.4);
+        }
+
+        /* ===== HERO SECTION ===== */
+        .hero {
+            padding: 140px 0 80px 0;
+            background: linear-gradient(160deg, #ffffff 0%, var(--blue-bg) 100%);
+            position: relative;
+            overflow: hidden;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -30%;
+            right: -10%;
+            width: 600px;
+            height: 600px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(45, 123, 222, 0.06) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            background: var(--blue-lighter);
+            color: var(--blue);
+            padding: 0.4rem 1.2rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            letter-spacing: 0.5px;
+        }
+
+        .hero h1 {
+            font-weight: 900;
+            font-size: 4.2rem;
+            line-height: 1.1;
+            color: var(--navy);
+            letter-spacing: -2px;
+        }
+
+        .hero h1 .highlight {
+            color: var(--blue);
+            position: relative;
+        }
+
+        .hero h1 .highlight::after {
+            content: '';
+            position: absolute;
+            bottom: 4px;
+            left: 0;
+            right: 0;
+            height: 8px;
+            background: rgba(45, 123, 222, 0.15);
+            border-radius: 4px;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            max-width: 520px;
+            line-height: 1.8;
+            margin-top: 1.2rem;
+        }
+
+        .hero-cta {
+            margin-top: 2rem;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary-custom {
+            background: var(--gradient-blue);
+            color: white;
+            padding: 0.9rem 2.8rem;
+            border-radius: 50px;
+            font-weight: 600;
+            border: none;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            box-shadow: 0 4px 15px rgba(45, 123, 222, 0.3);
+        }
+
+        .btn-primary-custom:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(45, 123, 222, 0.4);
+            color: white;
+        }
+
+        .btn-outline-custom {
+            background: transparent;
+            color: var(--navy);
+            padding: 0.9rem 2.8rem;
+            border-radius: 50px;
+            font-weight: 600;
+            border: 2px solid var(--border-light);
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .btn-outline-custom:hover {
+            border-color: var(--blue);
+            color: var(--blue);
+            transform: translateY(-3px);
+        }
+
+        .hero-logo-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .hero-logo-wrapper svg {
+            width: 100%;
+            max-width: 380px;
+            height: auto;
+            filter: drop-shadow(0 20px 60px rgba(11, 38, 71, 0.12));
+        }
+
+        /* ===== PLANNER INFO ===== */
+        .planner-info {
+            padding: 80px 0;
+            background: white;
+        }
+
+        .planner-card {
+            background: var(--blue-bg);
+            border-radius: 24px;
+            padding: 3rem;
+            border: 1px solid var(--border-light);
+            transition: all 0.3s;
+            height: 100%;
+        }
+
+        .planner-card:hover {
+            box-shadow: var(--shadow-hover);
+            transform: translateY(-4px);
+        }
+
+        .planner-card .icon-box {
+            width: 70px;
+            height: 70px;
+            background: var(--gradient-blue);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: white;
+            margin-bottom: 1.2rem;
+        }
+
+        .planner-card h4 {
+            font-weight: 700;
+            color: var(--navy);
+        }
+
+        .planner-card p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+
+        .planner-card ul {
+            list-style: none;
+            padding: 0;
+            margin: 1rem 0 0;
+        }
+
+        .planner-card ul li {
+            padding: 0.4rem 0;
+            color: var(--text-dark);
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .planner-card ul li i {
+            color: var(--blue);
+            font-size: 1rem;
+        }
+
+        /* ===== WHO CAN USE ===== */
+        .users-section {
+            padding: 80px 0;
+            background: var(--blue-bg);
+        }
+
+        .user-type-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            border: 1px solid var(--border-light);
+            transition: all 0.3s;
+            height: 100%;
+        }
+
+        .user-type-card:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--shadow-hover);
+            border-color: var(--blue-light);
+        }
+
+        .user-type-card .emoji {
+            font-size: 3.5rem;
+            display: block;
+            margin-bottom: 1rem;
+        }
+
+        .user-type-card h5 {
+            font-weight: 700;
+            color: var(--navy);
+        }
+
+        .user-type-card p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin-bottom: 0;
+        }
+
+        /* ===== HOW IT WORKS ===== */
+        .how-it-works {
+            padding: 80px 0;
+            background: white;
+        }
+
+        .step-card {
+            text-align: center;
+            padding: 2rem 1.5rem;
+            position: relative;
+        }
+
+        .step-card .step-number {
+            width: 60px;
+            height: 60px;
+            background: var(--gradient-blue);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin: 0 auto 1.2rem;
+            box-shadow: 0 8px 25px rgba(45, 123, 222, 0.25);
+        }
+
+        .step-card h5 {
+            font-weight: 700;
+            color: var(--navy);
+        }
+
+        .step-card p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .step-connector {
+            display: none;
+        }
+
+        @media (min-width: 768px) {
+            .step-connector {
+                display: block;
+                position: absolute;
+                top: 50%;
+                right: -15%;
+                width: 30%;
+                height: 2px;
+                background: var(--border-light);
+            }
+
+            .step-connector::after {
+                content: '→';
+                position: absolute;
+                right: -8px;
+                top: -10px;
+                color: var(--blue);
+                font-size: 1.2rem;
+            }
+        }
+
+        /* ===== FEATURES ===== */
+        .features-section {
+            padding: 80px 0;
+            background: var(--blue-bg);
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1.2rem;
+            padding: 1.5rem;
+            background: white;
+            border-radius: 16px;
+            border: 1px solid var(--border-light);
+            transition: all 0.3s;
+            height: 100%;
+        }
+
+        .feature-item:hover {
+            box-shadow: var(--shadow);
+            transform: translateX(4px);
+        }
+
+        .feature-item .icon {
+            width: 48px;
+            height: 48px;
+            min-width: 48px;
+            background: var(--blue-lighter);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            color: var(--blue);
+        }
+
+        .feature-item .content h6 {
+            font-weight: 600;
+            color: var(--navy);
+            margin-bottom: 0.2rem;
+        }
+
+        .feature-item .content p {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin: 0;
+            line-height: 1.5;
+        }
+
+        /* ===== CTA SECTION ===== */
+        .cta-section {
+            padding: 80px 0;
+            background: var(--gradient-primary);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 500px;
+            height: 500px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(45, 123, 222, 0.1) 0%, transparent 70%);
+        }
+
+        .cta-section .content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+        }
+
+        .cta-section h2 {
+            font-weight: 900;
+            font-size: 2.8rem;
+            color: white;
+        }
+
+        .cta-section p {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1.1rem;
+            max-width: 500px;
+            margin: 1rem auto 0;
+        }
+
+        .cta-section .btn-cta {
+            background: white;
+            color: var(--navy);
+            padding: 0.9rem 3rem;
+            border-radius: 50px;
+            font-weight: 700;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.8rem;
+            margin-top: 2rem;
+            transition: all 0.3s;
+        }
+
+        .cta-section .btn-cta:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+            background: var(--blue-lighter);
+        }
+
+        /* ===== FOOTER ===== */
+        .footer {
+            background: var(--navy);
+            color: rgba(255, 255, 255, 0.7);
+            padding: 60px 0 30px;
+        }
+
+        .footer h5 {
+            color: white;
+            font-weight: 700;
+            margin-bottom: 1.2rem;
+        }
+
+        .footer a {
+            color: rgba(255, 255, 255, 0.6);
+            text-decoration: none;
+            transition: all 0.2s;
+            display: block;
+            margin-bottom: 0.6rem;
+        }
+
+        .footer a:hover {
+            color: white;
+            transform: translateX(4px);
+        }
+
+        .footer .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .footer .social-links a {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.06);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+            margin-bottom: 0;
+        }
+
+        .footer .social-links a:hover {
+            background: var(--blue);
+            transform: translateY(-3px);
+        }
+
+        .footer .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            padding-top: 2rem;
+            margin-top: 2rem;
+            text-align: center;
+            font-size: 0.85rem;
+        }
+
+        .footer .footer-bottom a {
+            display: inline-block;
+            margin-bottom: 0;
+        }
+
+        .footer .footer-bottom a:hover {
+            transform: none;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 992px) {
+            .hero h1 {
+                font-size: 3rem;
+            }
+            .hero {
+                padding: 120px 0 60px;
+                min-height: auto;
+            }
+            .hero-logo-wrapper svg {
+                max-width: 280px;
+            }
+            .planner-card {
+                padding: 2rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero {
+                text-align: center;
+                padding: 100px 0 40px;
+            }
+            .hero h1 {
+                font-size: 2.4rem;
+            }
+            .hero p {
+                font-size: 1rem;
+                margin-left: auto;
+                margin-right: auto;
+            }
+            .hero-cta {
+                justify-content: center;
+            }
+            .hero-logo-wrapper svg {
+                max-width: 220px;
+                margin-top: 2rem;
+            }
+            .cta-section h2 {
+                font-size: 2rem;
+            }
+            .planner-card {
+                padding: 1.5rem;
+            }
+            .feature-item {
+                padding: 1rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .hero h1 {
+                font-size: 1.8rem;
+            }
+            .btn-primary-custom,
+            .btn-outline-custom {
+                padding: 0.7rem 1.8rem;
+                font-size: 0.9rem;
+            }
+            .user-type-card {
+                padding: 1.5rem;
+            }
+            .step-card {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== NAVIGATION ===== -->
+    <nav class="navbar navbar-expand-lg" id="mainNav">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="24" y="22" width="16" height="56" rx="6" fill="#0B2647"/>
+                    <path d="M 40 22 H 58 C 74 22, 78 46, 69 56 C 60 66, 40 64, 40 64 Z" fill="#0B2647"/>
+                    <circle cx="80" cy="28" r="6" fill="#2D7BDE"/>
+                    <circle cx="80" cy="28" r="3" fill="#ffffff"/>
+                    <line x1="72" y1="32" x2="62" y2="42" stroke="#2D7BDE" stroke-width="1.5" opacity="0.3"/>
+                    <circle cx="48" cy="44" r="2" fill="#2D7BDE" opacity="0.4"/>
+                </svg>
+                Pam<span>odzi</span> Planner
+            </a>
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item"><a class="nav-link" href="#planner">The Planner</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#users">Who Can Use</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#how-it-works">How It Works</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#features">Features</a></li>
+                    <li class="nav-item">
+                        <a class="nav-link btn-nav" href="planner/index.php">
+                            <i class="bi bi-calendar-check me-1"></i>Start Planning
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ===== HERO SECTION ===== -->
+    <section class="hero" id="home">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6 hero-content">
+                    <div class="hero-badge">
+                        <i class="bi bi-calendar-check me-1"></i> Free Daily Planner
+                    </div>
+                    <h1>
+                        Plan Your Day.<br />
+                        <span class="highlight">Achieve Your Goals.</span>
+                    </h1>
+                    <p>
+                        A powerful, community-driven planning system designed to help you
+                        stay organized, track your progress, and build better habits —
+                        one day at a time.
+                    </p>
+                    <div class="hero-cta">
+                        <a href="planner/index.php" class="btn-primary-custom">
+                            <i class="bi bi-rocket-takeoff"></i> Get Started Free
+                        </a>
+                        <a href="#planner" class="btn-outline-custom">
+                            <i class="bi bi-arrow-down"></i> Learn More
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="hero-logo-wrapper">
+                        <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                            <defs>
+                                <linearGradient id="heroGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" stop-color="#0B2647"/>
+                                    <stop offset="100%" stop-color="#2D7BDE"/>
+                                </linearGradient>
+                                <linearGradient id="heroGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" stop-color="#6BA6FF"/>
+                                    <stop offset="100%" stop-color="#2D7BDE"/>
+                                </linearGradient>
+                                <filter id="heroGlow">
+                                    <feGaussianBlur stdDeviation="8" result="blur"/>
+                                    <feMerge>
+                                        <feMergeNode in="blur"/>
+                                        <feMergeNode in="SourceGraphic"/>
+                                    </feMerge>
+                                </filter>
+                            </defs>
+                            <circle cx="100" cy="100" r="82" fill="none" stroke="rgba(11,38,71,0.04)" stroke-width="2"/>
+                            <circle cx="100" cy="100" r="70" fill="none" stroke="rgba(11,38,71,0.02)" stroke-width="1"/>
+                            <rect x="52" y="45" width="28" height="110" rx="8" fill="url(#heroGrad1)"/>
+                            <path d="M 80 45 H 115 C 148 45, 155 82, 138 102 C 120 122, 80 118, 80 118 Z" fill="url(#heroGrad1)"/>
+                            <circle cx="155" cy="50" r="12" fill="url(#heroGrad2)" filter="url(#heroGlow)" opacity="0.9"/>
+                            <circle cx="155" cy="50" r="5" fill="#ffffff"/>
+                            <line x1="141" y1="56" x2="125" y2="70" stroke="#2D7BDE" stroke-width="2.5" stroke-linecap="round" opacity="0.25"/>
+                            <line x1="155" y1="62" x2="155" y2="82" stroke="#2D7BDE" stroke-width="2" stroke-linecap="round" opacity="0.15"/>
+                            <circle cx="95" cy="68" r="3" fill="#2D7BDE" opacity="0.3"/>
+                            <circle cx="95" cy="95" r="3" fill="#2D7BDE" opacity="0.2"/>
+                            <circle cx="175" cy="80" r="3" fill="rgba(11,38,71,0.1)"/>
+                            <circle cx="40" cy="170" r="4" fill="rgba(11,38,71,0.06)"/>
+                            <circle cx="180" cy="140" r="2.5" fill="rgba(11,38,71,0.08)"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== PLANNER INFO ===== -->
+    <section class="planner-info" id="planner">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-lg-6">
+                    <div class="planner-card animate-on-scroll">
+                        <div class="icon-box"><i class="bi bi-calendar-check"></i></div>
+                        <h4>What is the Pamodzi Planner?</h4>
+                        <p>
+                            The <strong>Pamodzi Daily Planner</strong> is a free, web-based tool
+                            designed to help you organize your tasks, track your daily activities,
+                            and stay accountable to your goals.
+                        </p>
+                        <ul>
+                            <li><i class="bi bi-check-circle-fill"></i> Create tasks for each day of the week</li>
+                            <li><i class="bi bi-check-circle-fill"></i> Track your daily activity limit (40 tasks/day)</li>
+                            <li><i class="bi bi-check-circle-fill"></i> Tasks automatically expire after 90 days</li>
+                            <li><i class="bi bi-check-circle-fill"></i> Renew important tasks monthly</li>
+                            <li><i class="bi bi-check-circle-fill"></i> Community-driven and completely free</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="planner-card animate-on-scroll" style="background:white; border:2px solid var(--border-light);">
+                        <div class="icon-box" style="background:var(--gradient-primary);"><i class="bi bi-rocket"></i></div>
+                        <h4>Why Use This Planner?</h4>
+                        <p>
+                            Built by <strong>Pamodzi Brand</strong> for the community, this planner
+                            helps you build discipline, stay productive, and achieve your goals —
+                            whether you're a student, professional, or entrepreneur.
+                        </p>
+                        <ul>
+                            <li><i class="bi bi-check-circle-fill"></i> <strong>100% Free</strong> — No hidden fees</li>
+                            <li><i class="bi bi-check-circle-fill"></i> <strong>Community Focused</strong> — Built for students and professionals</li>
+                            <li><i class="bi bi-check-circle-fill"></i> <strong>Smart Limits</strong> — Prevents overwhelm</li>
+                            <li><i class="bi bi-check-circle-fill"></i> <strong>Automatic Cleanup</strong> — Tasks expire after 90 days</li>
+                            <li><i class="bi bi-check-circle-fill"></i> <strong>Renewal System</strong> — Keep what matters</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== WHO CAN USE ===== -->
+    <section class="users-section" id="users">
+        <div class="container">
+            <div class="section-header text-center mb-5">
+                <span class="badge bg-primary bg-opacity-10 text-primary py-2 px-4 rounded-pill">
+                    <i class="bi bi-people me-1"></i> For Everyone
+                </span>
+                <h2 class="fw-bold mt-3" style="color:var(--navy);">
+                    Who Can Use <span style="color:var(--blue);">This Planner?</span>
+                </h2>
+                <p class="text-secondary" style="max-width:560px; margin:0 auto;">
+                    Designed for anyone who wants to stay organized and achieve their goals.
+                </p>
+            </div>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="user-type-card animate-on-scroll">
+                        <span class="emoji">🎓</span>
+                        <h5>Students</h5>
+                        <p>
+                            Organize assignments, track study sessions, and manage
+                            your academic workload effectively. Stay on top of deadlines
+                            and build better study habits.
+                        </p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="user-type-card animate-on-scroll">
+                        <span class="emoji"></span>
+                        <h5>Professionals</h5>
+                        <p>
+                            Manage projects, prioritize tasks, and track your daily
+                            work activities. Stay productive and meet your career
+                            goals with ease.
+                        </p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="user-type-card animate-on-scroll">
+                        <span class="emoji"></span>
+                        <h5>Entrepreneurs</h5>
+                        <p>
+                            Plan your business tasks, track progress on key projects,
+                            and maintain momentum. Perfect for startups and small
+                            business owners.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center mt-4">
+                <p class="text-secondary">
+                    <i class="bi bi-check-circle-fill text-primary me-1"></i>
+                    <strong>Everyone is welcome</strong> — It's free and open to the community!
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== HOW IT WORKS ===== -->
+    <section class="how-it-works" id="how-it-works">
+        <div class="container">
+            <div class="section-header text-center mb-5">
+                <span class="badge bg-primary bg-opacity-10 text-primary py-2 px-4 rounded-pill">
+                    <i class="bi bi-steps me-1"></i> Simple Process
+                </span>
+                <h2 class="fw-bold mt-3" style="color:var(--navy);">
+                    How It <span style="color:var(--blue);">Works</span>
+                </h2>
+                <p class="text-secondary" style="max-width:560px; margin:0 auto;">
+                    Get started in three simple steps and start achieving your goals.
+                </p>
+            </div>
+            <div class="row position-relative">
+                <div class="col-md-4">
+                    <div class="step-card animate-on-scroll">
+                        <div class="step-number">1</div>
+                        <h5>Create Your Account</h5>
+                        <p>
+                            Sign up for free with your email address. It takes less than
+                            a minute and gives you access to all features.
+                        </p>
+                        <span class="step-connector"></span>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="step-card animate-on-scroll">
+                        <div class="step-number">2</div>
+                        <h5>Add Your Tasks</h5>
+                        <p>
+                            Create tasks for any day of the week. Set priorities,
+                            track progress, and stay organized. You can add up to
+                            40 tasks per day.
+                        </p>
+                        <span class="step-connector"></span>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="step-card animate-on-scroll">
+                        <div class="step-number">3</div>
+                        <h5>Track &amp; Achieve</h5>
+                        <p>
+                            Complete tasks, renew important ones, and watch your
+                            productivity grow. Tasks expire after 90 days to keep
+                            you focused on what matters.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center mt-4">
+                <a href="planner/index.php" class="btn-primary-custom">
+                    <i class="bi bi-calendar-check"></i> Start Planning Now
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== FEATURES ===== -->
+    <section class="features-section" id="features">
+        <div class="container">
+            <div class="section-header text-center mb-5">
+                <span class="badge bg-primary bg-opacity-10 text-primary py-2 px-4 rounded-pill">
+                    <i class="bi bi-list-check me-1"></i> Key Features
+                </span>
+                <h2 class="fw-bold mt-3" style="color:var(--navy);">
+                    Built for <span style="color:var(--blue);">Productivity</span>
+                </h2>
+                <p class="text-secondary" style="max-width:560px; margin:0 auto;">
+                    Everything you need to stay organized and achieve your goals.
+                </p>
+            </div>
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <div class="feature-item animate-on-scroll">
+                        <div class="icon"><i class="bi bi-calendar-week"></i></div>
+                        <div class="content">
+                            <h6>7-Day Planning</h6>
+                            <p>Organize tasks for every day of the week. See your entire week at a glance.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="feature-item animate-on-scroll">
+                        <div class="icon"><i class="bi bi-clock-history"></i></div>
+                        <div class="content">
+                            <h6>90-Day Expiry</h6>
+                            <p>Tasks automatically expire after 90 days. Stay focused on current priorities.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="feature-item animate-on-scroll">
+                        <div class="icon"><i class="bi bi-arrow-repeat"></i></div>
+                        <div class="content">
+                            <h6>Monthly Renewal</h6>
+                            <p>Renew important tasks each month. Keep what matters most on your radar.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="feature-item animate-on-scroll">
+                        <div class="icon"><i class="bi bi-speedometer2"></i></div>
+                        <div class="content">
+                            <h6>40 Tasks/Day Limit</h6>
+                            <p>Stay focused and avoid overwhelm with a daily task limit of 40 activities.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="feature-item animate-on-scroll">
+                        <div class="icon"><i class="bi bi-shield-check"></i></div>
+                        <div class="content">
+                            <h6>Secure &amp; Free</h6>
+                            <p>100% free to use. Your data is secure and protected. No hidden costs.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="feature-item animate-on-scroll">
+                        <div class="icon"><i class="bi bi-people"></i></div>
+                        <div class="content">
+                            <h6>Community Driven</h6>
+                            <p>Built by Pamodzi Brand for the community. Used by students and professionals.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== CTA SECTION ===== -->
+    <section class="cta-section">
+        <div class="container">
+            <div class="content">
+                <h2>Ready to Start <span style="color:var(--blue-light);">Planning?</span></h2>
+                <p>
+                    Join hundreds of students and professionals who are already using
+                    the Pamodzi Planner to organize their lives and achieve their goals.
+                </p>
+                <a href="planner/index.php" class="btn-cta">
+                    <i class="bi bi-calendar-check"></i> Launch the Planner
+                    <i class="bi bi-arrow-right"></i>
+                </a>
+                <p style="font-size:0.85rem; margin-top:1.5rem; opacity:0.5;">
+                    <i class="bi bi-shield-check me-1"></i> Free forever · No credit card required
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <h5>
+                        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="height:28px; width:28px; display:inline-block; vertical-align:middle; margin-right:8px;">
+                            <rect x="24" y="22" width="16" height="56" rx="6" fill="#6BA6FF"/>
+                            <path d="M 40 22 H 58 C 74 22, 78 46, 69 56 C 60 66, 40 64, 40 64 Z" fill="#6BA6FF"/>
+                            <circle cx="80" cy="28" r="6" fill="#2D7BDE"/>
+                            <circle cx="80" cy="28" r="3" fill="white"/>
+                        </svg>
+                        Pamodzi Planner
+                    </h5>
+                    <p style="font-size:0.9rem;">
+                        A community-driven planning system built to help you
+                        stay organized, productive, and achieve your goals.
+                    </p>
+                    <div class="social-links">
+                        <a href="#"><i class="bi bi-facebook"></i></a>
+                        <a href="#"><i class="bi bi-twitter-x"></i></a>
+                        <a href="#"><i class="bi bi-instagram"></i></a>
+                        <a href="#"><i class="bi bi-linkedin"></i></a>
+                        <a href="#"><i class="bi bi-youtube"></i></a>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <h5>Quick Links</h5>
+                    <a href="#planner">The Planner</a>
+                    <a href="#users">Who Can Use</a>
+                    <a href="#how-it-works">How It Works</a>
+                    <a href="#features">Features</a>
+                </div>
+                <div class="col-md-3">
+                    <h5>Our Products</h5>
+                    <a href="planner/index.php">Daily Planner</a>
+                    <a href="https://pamodzibrand.site.je/" target="_blank">Pamodzi Brand</a>
+                    <a href="#">Web Development</a>
+                    <a href="#">Brand Identity</a>
+                </div>
+                <div class="col-md-3">
+                    <h5>Contact</h5>
+                    <a href="#"><i class="bi bi-envelope me-2"></i>info@pamodzibrand.site.je</a>
+                    <a href="#"><i class="bi bi-geo-alt me-2"></i>Malawi</a>
+                    <a href="#"><i class="bi bi-clock me-2"></i>Mon-Fri: 8AM - 5PM</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                &copy; 2024 Pamodzi Planner. All rights reserved.
+                Built with <i class="bi bi-heart-fill" style="color:#6BA6FF;"></i> in Malawi.
+                <br>
+                <a href="https://pamodzibrand.site.je/" target="_blank" style="display:inline-block; color: var(--blue-light);">
+                    <i class="bi bi-briefcase me-1"></i> Visit Pamodzi Brand
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ===== BOOTSTRAP JS ===== -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- ===== CUSTOM JS ===== -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Navbar scroll effect
+            const navbar = document.getElementById('mainNav');
+            window.addEventListener('scroll', function() {
+                if (window.scrollY > 20) {
+                    navbar.classList.add('scrolled');
+                } else {
+                    navbar.classList.remove('scrolled');
+                }
+            });
+
+            // Scroll animations
+            const animateElements = document.querySelectorAll('.animate-on-scroll');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            });
+            animateElements.forEach(el => observer.observe(el));
+
+            // Smooth scroll for anchor links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    const href = this.getAttribute('href');
+                    if (href === '#') return;
+
+                    e.preventDefault();
+                    const target = document.querySelector(href);
+                    if (target) {
+                        const offset = 80;
+                        const targetPosition = target.getBoundingClientRect().top + window.pageYOffset - offset;
+                        window.scrollTo({
+                            top: targetPosition,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>
